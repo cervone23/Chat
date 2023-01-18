@@ -4,7 +4,7 @@ from streamlit_chat import message
 import openai
 from PIL import Image
 
-openai.api_key = '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'
+openai.api_key = ''
 
 st.set_page_config(
     page_title = "ChatGPT chatbot",
