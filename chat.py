@@ -4,47 +4,30 @@ import openai
 from PIL import Image
 import base64
 
-# CSS 
-
-@st.experimental_memo
-def get_img_as_base64(file):
-    with open(file, "rb") as f:
-        data = f.read()
-    return base64.b64encode(data).decode()
-
-img = get_img_as_base64("image.jpg")
-
-page_bg_image = f"""
-<style>
-[data-testid="stAppViewContainer"] > .main {{
-background-image: url("https://images.unsplash.com/photo-1501426026826-31c667bdf23d");
-background-size: 180%;
-background-position: top left;
-background-repeat: no-repeat;
-background-attachment: local;
-}}
-[data-testid="stSidebar"] > div:first-child {{
-background-image: url("data:image/png;base64,{img}");
-background-position: center; 
-background-repeat: no-repeat;
-background-attachment: fixed;
-}}
-[data-testid="stHeader"] {{
-background: rgba(0,0,0,0);
-}}
-[data-testid="stToolbar"] {{
-right: 2rem;
-}}
-</style>
-"""
-st.markdown(page_bg_image, unsafe_allow_html = True)
-
-openai.api_key = st.secrets['api_key']
-
 st.set_page_config(
     page_title = "Blackstone ChatGPT Chatbot",
     page_icon = Image.open("favicon.png")
 )
+
+def image_local(image_file):
+    with open(image_file, "rb") as image_file:
+        encoded_string = base64.b64encode(image_file.read())
+    st.markdown(
+    f"""
+    <style>
+    .stApp {{
+        background-image: url(data:image/{"png"};base64,{encoded_string.decode()});
+        background-size: cover
+    }}
+    </style>
+    """,
+    unsafe_allow_html=True
+    )
+image_local('image.png')    
+
+###############################################################################
+    
+openai.api_key = st.secrets['api_key']
 
 if 'generated' not in st.session_state:
     st.session_state['generated'] = []
